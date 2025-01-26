@@ -1,10 +1,10 @@
 package main.java.com.walletapi.services;
 
-import main.java.com.walletapi.analyzers.FrequencyRule;
-import main.java.com.walletapi.analyzers.LocationRule;
-import main.java.com.walletapi.analyzers.SmallTransactionsRule;
+import main.java.com.walletapi.utils.riskcalculator.analyzers.FrequencyRule;
+import main.java.com.walletapi.utils.riskcalculator.analyzers.LocationRule;
+import main.java.com.walletapi.utils.riskcalculator.analyzers.SmallTransactionsRule;
 import main.java.com.walletapi.models.Transaction;
-import main.java.com.walletapi.utils.RiskCalculator;
+import main.java.com.walletapi.utils.riskcalculator.RiskCalculator;
 
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -27,12 +27,6 @@ public class FraudDetectionService {
         riskCalculator.addRule(new LocationRule(MAX_DISTINCT_LOCATIONS));
     }
 
-    /**
-     * Evaluates all wallets and returns a list of flagged transactions.
-     *
-     * @param walletService The wallet service providing access to all wallets.
-     * @return A list of flagged transactions across all wallets.
-     */
     public List<Transaction> evaluateAllWallets(WalletService walletService) {
         return walletService.getWallets().values().stream()
             .flatMap(wallet -> wallet.getTransactions().stream()

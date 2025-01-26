@@ -43,4 +43,12 @@ public class WalletService {
     public ConcurrentHashMap<String, Wallet> getWallets() {
         return wallets;
     }
+
+    public BigDecimal getBalance(String walletId) {
+        Wallet wallet = wallets.get(walletId);
+        if (wallet == null) {
+            throw new InvalidWalletException("Wallet not found: " + walletId);
+        }
+        return wallet.getBalance();
+    }
 }

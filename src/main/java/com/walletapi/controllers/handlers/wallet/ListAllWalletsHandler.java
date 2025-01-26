@@ -1,8 +1,8 @@
-package main.java.com.walletapi.controllers.handlers.analytics;
+package main.java.com.walletapi.controllers.handlers.wallet;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import main.java.com.walletapi.services.AnalyticsService;
+import main.java.com.walletapi.services.WalletService;
 import main.java.com.walletapi.utils.AdminAuthValidator;
 import main.java.com.walletapi.utils.ResponseFormatter;
 
@@ -10,18 +10,15 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 
-public class TopSpendersHandler implements HttpHandler {
-
-    private static final int DEFAULT_LIMIT = 5;
+public class ListAllWalletsHandler implements HttpHandler {
     private static final int STATUS_OK = 200;
-    private static final int STATUS_BAD_REQUEST = 400;
     private static final int STATUS_UNAUTHORIZED = 401;
     private static final int STATUS_METHOD_NOT_ALLOWED = 405;
 
-    private final AnalyticsService analyticsService;
+    private final WalletService walletService;
 
-    public TopSpendersHandler(AnalyticsService analyticsService) {
-        this.analyticsService = analyticsService;
+    public ListAllWalletsHandler(WalletService walletService) {
+        this.walletService = walletService;
     }
 
     @Override
@@ -36,17 +33,8 @@ public class TopSpendersHandler implements HttpHandler {
                 return;
             }
 
-            try {
-                String query = exchange.getRequestURI().getQuery();
-                int limit = query != null && query.contains("limit=")
-                    ? Integer.parseInt(query.split("=")[1])
-                    : DEFAULT_LIMIT;
-
-                String response = ResponseFormatter.formatTopSpenders(analyticsService.getTopSpenders(limit));
-                sendResponse(exchange, STATUS_OK, response);
-            } catch (NumberFormatException e) {
-                sendResponse(exchange, STATUS_BAD_REQUEST, "Invalid 'limit' parameter.");
-            }
+            String response = ResponseFormatter.formatWallets(walletService.getWallets());
+            sendResponse(exchange, STATUS_OK, response);
         } else {
             sendResponse(exchange, STATUS_METHOD_NOT_ALLOWED, "Method Not Allowed.");
         }

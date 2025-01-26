@@ -2,7 +2,6 @@ import com.sun.net.httpserver.HttpServer;
 import main.java.com.walletapi.controllers.AnalyticsController;
 import main.java.com.walletapi.controllers.FraudController;
 import main.java.com.walletapi.controllers.WalletController;
-import main.java.com.walletapi.services.ResourceManager;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;

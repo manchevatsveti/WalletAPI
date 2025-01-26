@@ -5,6 +5,7 @@ import com.sun.net.httpserver.HttpHandler;
 import main.java.com.walletapi.models.Transaction;
 import main.java.com.walletapi.services.FraudDetectionService;
 import main.java.com.walletapi.services.WalletService;
+import main.java.com.walletapi.utils.AdminAuthValidator;
 import main.java.com.walletapi.utils.ResponseFormatter;
 
 import java.io.IOException;
@@ -15,6 +16,7 @@ import java.util.List;
 public class FraudTransactionsHandler implements HttpHandler {
 
     private static final int STATUS_OK = 200;
+    private static final int STATUS_UNAUTHORIZED = 401;
     private static final int STATUS_METHOD_NOT_ALLOWED = 405;
 
     private final FraudDetectionService fraudService;
@@ -28,6 +30,14 @@ public class FraudTransactionsHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         if ("GET".equals(exchange.getRequestMethod())) {
+            String adminKey = exchange.getRequestHeaders().getFirst("Admin-Key");
+
+            if (!AdminAuthValidator.isValidAdminKey(adminKey)) {
+                sendResponse(exchange, STATUS_UNAUTHORIZED,
+                    "Unauthorized: Invalid Admin Key. Add this to your command for access: " +
+                        "-H \"Admin-Key: xxx\", where xxx is the admin key");
+                return;
+            }
             List<Transaction> flaggedTransactions = fraudService.evaluateAllWallets(walletService);
 
             String response;
