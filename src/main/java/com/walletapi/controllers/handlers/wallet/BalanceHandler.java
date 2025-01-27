@@ -7,6 +7,8 @@ import main.java.com.walletapi.services.WalletService;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class BalanceHandler implements HttpHandler {
 
@@ -14,6 +16,8 @@ public class BalanceHandler implements HttpHandler {
     private static final int STATUS_BAD_REQUEST = 400;
     private static final int STATUS_NOT_FOUND = 404;
     private static final int STATUS_METHOD_NOT_ALLOWED = 405;
+
+    private static final Pattern PATH_PATTERN = Pattern.compile("^/wallets/balance/([a-zA-Z0-9]+)$");
 
     private final WalletService walletService;
 
@@ -24,28 +28,32 @@ public class BalanceHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         if ("GET".equals(exchange.getRequestMethod())) {
-            String walletId = exchange.getRequestHeaders().getFirst("Wallet-Id");
+            String path = exchange.getRequestURI().getPath();
+            Matcher matcher = PATH_PATTERN.matcher(path);
 
-            if (walletId == null || walletId.isBlank()) {
-                sendResponse(exchange, STATUS_BAD_REQUEST, "Bad Request: Wallet-Id is required.");
-                return;
-            }
+            if (matcher.matches()) {
+                String walletId = matcher.group(1);
 
-            try {
-                String balance = walletService.getBalance(walletId).toString();
-                sendResponse(exchange, STATUS_OK, "Wallet balance: " + balance);
-            } catch (IllegalArgumentException e) {
-                sendResponse(exchange, STATUS_NOT_FOUND, "Wallet not found.");
+                try {
+                    String balance = walletService.getBalance(walletId).toString();
+                    sendJsonResponse(exchange, STATUS_OK,
+                        "{\"walletId\":\"" + walletId + "\",\"balance\":\"" + balance + "\"}");
+                } catch (IllegalArgumentException e) {
+                    sendJsonResponse(exchange, STATUS_NOT_FOUND, "{\"error\":\"Wallet not found\"}");
+                }
+            } else {
+                sendJsonResponse(exchange, STATUS_BAD_REQUEST, "{\"error\":\"Invalid wallet ID format\"}");
             }
         } else {
-            sendResponse(exchange, STATUS_METHOD_NOT_ALLOWED, "Method Not Allowed.");
+            sendJsonResponse(exchange, STATUS_METHOD_NOT_ALLOWED, "{\"error\":\"Method Not Allowed\"}");
         }
     }
 
-    private void sendResponse(HttpExchange exchange, int statusCode, String response) throws IOException {
-        exchange.sendResponseHeaders(statusCode, response.getBytes(StandardCharsets.UTF_8).length);
+    private void sendJsonResponse(HttpExchange exchange, int statusCode, String jsonResponse) throws IOException {
+        exchange.getResponseHeaders().set("Content-Type", "application/json");
+        exchange.sendResponseHeaders(statusCode, jsonResponse.getBytes(StandardCharsets.UTF_8).length);
         try (OutputStream os = exchange.getResponseBody()) {
-            os.write(response.getBytes(StandardCharsets.UTF_8));
+            os.write(jsonResponse.getBytes(StandardCharsets.UTF_8));
         }
     }
 }

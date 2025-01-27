@@ -3,8 +3,6 @@ package main.java.com.walletapi.controllers;
 import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpServer;
 import main.java.com.walletapi.controllers.handlers.analytics.TopSpendersHandler;
-import main.java.com.walletapi.services.AnalyticsService;
-import main.java.com.walletapi.services.ResourceManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
