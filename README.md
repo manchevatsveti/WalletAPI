@@ -111,7 +111,7 @@ The project follows a modular structure for scalability and clarity:
   curl -X POST http://localhost:8080/wallets/withdraw  -H "Content-Type: text/plain"  -d "1,100.00"
   ```
    
-- **GET /all-wallets **  
+- **GET /all-wallets**  
   Get all wallets information (admin only).  
 
   Example:  
