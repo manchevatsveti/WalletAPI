@@ -163,8 +163,8 @@ The project follows a modular structure for scalability and clarity:
 4. **Test with `curl` Commands**:  
    Use the examples provided above to test API functionalities directly from the command line. For example:  
    ```bash
-   curl -X POST http://localhost:8080/wallets
-   curl -X POST http://localhost:8080/wallets/1/deposit -H "Content-Type: application/json" -d '{"amount": 100.0}'
+   curl -X POST http://localhost:8080/wallets/create
+   curl -X POST http://localhost:8080/wallets/deposit -H "Content-Type: text/plain"  -d "0,100.00"
    ```  
 
 ---
