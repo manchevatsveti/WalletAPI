@@ -136,7 +136,7 @@ The project follows a modular structure for scalability and clarity:
 
   Example:  
   ```bash
-  -X GET http://localhost:8080/analytics/top-spenders?limit=2
+  curl -X GET http://localhost:8080/analytics/top-spenders?limit=1 -H "Admin-Key: 1234"
   ```  
 
 ---
