@@ -196,4 +196,3 @@ The project follows a modular structure for scalability and clarity:
 ---
 
 Enjoy using the RESTful Wallet Management System! 🚀  
-```  
