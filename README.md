@@ -92,7 +92,7 @@ The project follows a modular structure for scalability and clarity:
 
   Example:  
   ```bash
-  curl -X GET http://localhost:8080/wallets/balance?walletId=1
+  curl -X GET http://localhost:8080/wallets/balance/1
   ```  
 
 - **POST /wallets/deposit**  
@@ -116,7 +116,7 @@ The project follows a modular structure for scalability and clarity:
 
   Example:  
   ```bash
-  curl -X GET http://localhost:8080/all-wallets -H "Admin-Key: 1234"//
+  curl -X GET http://localhost:8080/all-wallets -H "Admin-Key: 1234"
   ```  
 
 ### Fraud Detection 
@@ -125,7 +125,7 @@ The project follows a modular structure for scalability and clarity:
 
   Example:  
   ```bash
-  curl -X GET http://localhost:8080/fraud/transactions -H "Admin-Key: 1234"//only having the admin key we have access to this functionality
+  curl -X GET http://localhost:8080/fraud/transactions -H "Admin-Key: 1234"
   ```  
 
 ---
